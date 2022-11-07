@@ -17,7 +17,7 @@ library(pak)
 #------------------------------------------------------------
 
 
-stranded <- NHSRdatasets::stranded_data %>% 
+stranded1 <- NHSRdatasets::stranded_data %>% 
   setNames(c("stranded_class", "age", "care_home_ref_flag", "medically_safe_flag", 
              "hcop_flag", "needs_mental_health_support_flag", "previous_care_in_last_12_month", "admit_date", "frail_descrip")) %>% 
   mutate(stranded_class = factor(stranded_class)) %>% 
