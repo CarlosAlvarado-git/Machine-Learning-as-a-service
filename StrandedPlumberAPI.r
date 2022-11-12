@@ -27,6 +27,7 @@ function(){
 #* @post /predict
 
 function(req, res){
+  browser()
   data.frame(predict(model, newdata = as.data.frame(req$body), type="prob"))
 }
 
