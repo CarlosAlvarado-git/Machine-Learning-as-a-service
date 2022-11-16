@@ -11,6 +11,7 @@ library(ConfusionTableR)
 #library(taskscheduleR)
 library(data.table)
 library(pak)
+library(jsonlite)
 
 #------------------------------------------------------------
 #             Data Manipulation and loading 
@@ -40,6 +41,8 @@ set.seed(123)
 split <- rsample::initial_split(stranded, prop=3/4)
 train_data <- rsample::training(split)
 test_data <- rsample::testing(split)
+test_file_data <- jsonlite::toJSON(test_data)
+write(test_file_data, "test.json")
 
 #------------------------------------------------------------
 #             Rebalance Classes
@@ -68,13 +71,13 @@ predictions <- cbind(predict, predict_probs)
 #             Evaluate Confusion Matrix
 #------------------------------------------------------------
 
-cm <- caret::confusionMatrix(predictions$predict, 
-                             test_data[, names(test_data) %in% c("stranded_class")])
 
 # Append to a database table to monitor performance
 
-db_append_table <- ConfusionTableR::binary_class_cm(cm)
-data.table::fwrite(db_append_table, "confusion_matrix.csv")
+db_append_table <- ConfusionTableR::binary_class_cm(predictions$predict, test_data[, names(test_data) %in% c("stranded_class")])
+#data_csv_test <- db_append_table$record_level_cm %>% 
+#  select('Pred_Not.Stranded_Ref_Not.Stranded', 'Pred_Stranded_Ref_Not.Stranded', 'Pred_Not.Stranded_Ref_Stranded', 'Pred_Stranded_Ref_Stranded',
+#            'Balanced.Accuracy', 'Accuracy', 'Precision', 'Recall', 'Specificity')
 
 #------------------------------------------------------------
 #            Save Model

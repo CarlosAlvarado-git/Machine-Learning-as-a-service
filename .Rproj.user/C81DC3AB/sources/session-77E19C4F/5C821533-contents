@@ -1,0 +1,138 @@
+openapi: "3.0.3"
+info:
+  description: API Description
+  version: "1.0.0"
+  title: Stranded Patient Prediction
+  contact:
+    email: "g.hutson@nhs.net"
+
+paths:
+  /predict_una_linea:
+    post:
+      summary: 'Predict stranded patients based on input JSON'
+      responses:
+        default:
+          description: Default response.
+      parameters: []
+      requestBody:
+        description: Stranded Patient Data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                age:
+                  type: number
+                  title: Stranded Patient age
+                  example: 52
+                care_home_ref_flag:
+                  type: number
+                  title: Stranded Patient Care Home Referral Flag
+                  example: 1
+                medically_safe_flag:
+                  type: number
+                  title: Stranded Patient Medically Safe Flag
+                  example: 0
+                hcop_flag:
+                  type: number
+                  title: Stranded Patient Health Care for Older People
+                  example: 1
+                needs_mental_health_support_flag:
+                  type: number
+                  title: Stranded Patient needing mental health support
+                  example: 0
+                previous_care_in_last_12_month:
+                  type: number
+                  title: Stranded patient has had care previously
+                  example: 1
+                frail.Activity_Limitation:
+                  type: number
+                  title: Stranded patient is frail and has activity limitations
+                  example: 0
+                frail.Fall_patient_history:
+                  type: number
+                  title: Stranded patient has had history of falling
+                  example: 1
+                frail.Mobility_problems:
+                  type: number
+                  title: Stranded patient has mobility issues
+                  example: 0
+                  
+  /predict_en_batches:
+    post:
+      summary: 'Predict stranded patients based on input JSON'
+      responses:
+        default:
+          description: Default response.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/batches'
+              example:
+                - age: 52
+                  care_home_ref_flag: 1
+                  medically_safe_flag: 0
+                  hcop_flag: 1
+                  needs_mental_health_support_flag: 0
+                  previous_care_in_last_12_month: 1
+                  frail.Activity_Limitation: 0
+                  frail.Fall_patient_history: 1
+                  frail.Mobility_problems: 0
+                - age: 53
+                  care_home_ref_flag: 1
+                  medically_safe_flag: 0
+                  hcop_flag: 1
+                  needs_mental_health_support_flag: 0
+                  previous_care_in_last_12_month: 1
+                  frail.Activity_Limitation: 0
+                  frail.Fall_patient_history: 1
+                  frail.Mobility_problems: 0
+                
+
+  /metricas_performance:
+    post:
+      summary: 'Predict stranded patients based on input JSON'
+      responses:
+        default:
+          description: Default response.
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                # file
+                file:
+                  type: string
+                  format: binary
+                  
+                  
+components:
+  schemas:
+    batches:
+      type: object
+      properties:
+        age:
+          type: number
+        care_home_ref_flag:
+          type: number
+        medically_safe_flag:
+          type: number
+        hcop_flag:
+          type: number
+        needs_mental_health_support_flag:
+          type: number
+        previous_care_in_last_12_month:
+          type: number
+        frail.Activity_Limitation:
+          type: number
+        frail.Fall_patient_history:
+          type: number
+        frail.Mobility_problems:
+          type: number

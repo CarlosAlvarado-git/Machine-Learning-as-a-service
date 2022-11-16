@@ -7,12 +7,6 @@ info:
     email: "g.hutson@nhs.net"
 
 paths:
-  /connection-status:
-    get:
-      summary: 'Checks that our API service is running'
-      responses:
-        default:
-          description: Default response.
   /predict:
     post:
       summary: 'Predict stranded patients based on input JSON'
@@ -64,3 +58,23 @@ paths:
                   type: number
                   title: Stranded patient has mobility issues
                   example: 0
+                  
+                
+
+  /test_data:
+    post:
+      summary: 'Métricas de performance del modelo creado'
+      responses:
+        default:
+          description: Default response.
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                # file
+                file:
+                  type: string
+                  format: binary
