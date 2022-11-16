@@ -6,6 +6,29 @@ library(e1071)
 library(yaml)
 library(dplyr)
 library(tidyr)
+library(lubridate)
+
+#Generador de Logs
+logge <- function(req, res){
+  # boole <- length(req$args)
+  d <- Sys.time()
+  y <-list('usuario' = Sys.getenv("USERNAME"),
+           'end_point' = req$PATH_INFO,
+           'user_agent'=req$HTTP_USER_AGENT,
+           'time' = d, 
+           'payload'=req$body, 
+           'output' = res$body
+  )
+  archivo <- toJSON(y, force = TRUE)
+  
+  wd <- getwd()
+  
+  dir <- paste0(wd,"/logs","/year=", year(d), "/month=", month(d), "/day=", day(d))
+  
+  dir.create(dir, recursive = TRUE)
+  
+  write(archivo, file = paste0(dir,"/",as.integer(d),".json"), append = TRUE)
+}
 
 # Utilise post method to send JSON unseen data, in the same 
 # format as our dataset
@@ -20,7 +43,11 @@ model$modelInfo
 #* @post /predict
 
 function(req, res){
-  data.frame(predict(model, newdata = as.data.frame(req$body), type="prob"))
+  
+  resultado <- data.frame(predict(model, newdata = as.data.frame(req$body), type="prob"))
+  res$body <- resultado
+  logge(req,res)
+  resultado
 }
 
 #* Ruta de test
@@ -38,6 +65,8 @@ function(req, res){
     select('Pred_Not.Stranded_Ref_Not.Stranded', 'Pred_Stranded_Ref_Not.Stranded', 'Pred_Not.Stranded_Ref_Stranded', 'Pred_Stranded_Ref_Stranded',
            'Balanced.Accuracy', 'Accuracy', 'Precision', 'Recall', 'Specificity')
   
+  res$body <- data_csv_test
+  logge(req,res)
   data_csv_test
 }
 
